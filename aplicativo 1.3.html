@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogos de Hoje</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url('fundo.jpeg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #fff;
+    }
+    h1 {
+      text-align: center;
+      color: #fff;
+      padding: 20px 0;
+      background: rgba(0, 0, 0, 0.7);
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px; /* Espaçamento entre os botões */
+      margin: 20px 0;
+    }
+    .buttons button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #444;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      font-size: 16px;
+    }
+    .buttons button:hover {
+      background-color: #666;
+      transform: scale(1.05);
+    }
+    .list-container {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: #f9f9f9;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .list-item span {
+      flex: 1;
+    }
+    .actions {
+      display: flex;
+      gap: 5px;
+    }
+    .actions button {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+    }
+    .actions .green {
+      background-color: #28a745;
+    }
+    .actions .red {
+      background-color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+  <h1>Jogos de Hoje</h1>
+  <div class="buttons">
+    <button onclick="showFutebolList()">Futebol</button>
+    <button onclick="loadPage('basket.html')">Basquete</button>
+    <button onclick="loadPage('mma.html')">MMA</button>
+    <button onclick="loadPage('listagem.html')">Minha Lista</button>
+    <button onclick="loadPage('alavancagem.html')">Alavancagem</button>
+  </div>
+
+  <div id="contentFrame">
+    <!-- Conteúdo será renderizado aqui -->
+  </div>
+
+  <script>
+    const contentFrame = document.getElementById('contentFrame');
+
+    // Função para carregar páginas no iframe
+    function loadPage(page) {
+      contentFrame.innerHTML = `<iframe src="${page}" style="width: 100%; height: 80vh; border: none;"></iframe>`;
+    }
+
+    // Função para exibir a lista de Futebol
+    function showFutebolList() {
+      const listData = JSON.parse(localStorage.getItem('lista')) || [];
+      renderList(listData);
+    }
+
+    // Função para renderizar a lista na página
+    function renderList(data) {
+      contentFrame.innerHTML = `
+        <div class="list-container">
+          <h2>Partidas de Hoje</h2>
+          ${
+            data.length === 0
+              ? '<p>Nenhuma partida listada ainda.</p>'
+              : data.map(item => `
+                <div class="list-item">
+                  <span>${item.mandante} (${item.mercados})</span>
+                  <div class="actions">
+                    <button class="green" onclick="markGreen(this)"></button>
+                    <button class="red" onclick="markRed(this)"></button>
+                  </div>
+                </div>
+              `).join('')
+          }
+        </div>
+      `;
+    }
+
+    // Funções de marcação verde/vermelho
+    function markGreen(button) {
+      const buttons = button.parentNode.querySelectorAll('button');
+      buttons.forEach(btn => btn.style.opacity = 0.3);
+      button.style.opacity = 1;
+    }
+
+    function markRed(button) {
+      const buttons = button.parentNode.querySelectorAll('button');
+      buttons.forEach(btn => btn.style.opacity = 0.3);
+      button.style.opacity = 1;
+    }
+
+    // Inicializar exibição fixa para Futebol ao carregar
+    window.onload = () => {
+      showFutebolList();
+    };
+  </script>
+</body>
+</html>

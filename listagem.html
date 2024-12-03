@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minha Lista</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    .container {
+      width: 90%;
+      max-width: 600px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #444;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 15px;
+      margin-right: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button.list {
+      background-color: #28a745;
+      color: #fff;
+    }
+    button.clear {
+      background-color: #dc3545;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Minha Lista</h1>
+    <div class="form-group">
+      <label for="mandante">Mandante:</label>
+      <input type="text" id="mandante" placeholder="Digite o mandante">
+    </div>
+    <div class="form-group">
+      <label for="mercados">Mercados:</label>
+      <input type="text" id="mercados" placeholder="Digite os mercados">
+    </div>
+    <button class="list" onclick="addToList()">Listar</button>
+    <button class="clear" onclick="clearList()">Limpar Lista</button>
+    <div id="list-container">
+      <!-- Lista será renderizada aqui -->
+    </div>
+  </div>
+
+  <script>
+    const listContainer = document.getElementById('list-container');
+    let listData = JSON.parse(localStorage.getItem('lista')) || [];
+
+    function addToList() {
+      const mandante = document.getElementById('mandante').value.trim();
+      const mercados = document.getElementById('mercados').value.trim();
+
+      if (mandante && mercados) {
+        listData.push({ mandante, mercados });
+        localStorage.setItem('lista', JSON.stringify(listData));
+        renderList();
+        clearFields();
+      } else {
+        alert('Preencha todos os campos antes de listar.');
+      }
+    }
+
+    function renderList() {
+      listContainer.innerHTML = listData.map(item => `
+        <div>${item.mandante} (${item.mercados})</div>
+      `).join('');
+    }
+
+    function clearList() {
+      listData = [];
+      localStorage.setItem('lista', JSON.stringify([]));
+      renderList();
+    }
+
+    function clearFields() {
+      document.getElementById('mandante').value = '';
+      document.getElementById('mercados').value = '';
+    }
+
+    renderList();
+  </script>
+</body>
+</html>
