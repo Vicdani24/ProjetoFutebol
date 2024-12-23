@@ -61,7 +61,7 @@
 </head>
 <body>
   <h1>Análise de Jogos</h1>
-  <button id="load-games">Carregar Jogos do Dia</button>
+  <button id="load-games">Carregar Jogos</button>
   <div id="games-container">Clique no botão acima para carregar os jogos.</div>
 
   <script>
@@ -72,29 +72,35 @@
       "X-RapidAPI-Key": apiKey
     };
 
+    // Datas para análise
+    const dates = ["2024-12-23", "2024-12-24", "2024-12-25"]; // Adicione mais datas aqui
+
     async function fetchGames() {
       const gamesContainer = document.getElementById("games-container");
       gamesContainer.innerHTML = "<p>Carregando jogos...</p>";
 
       try {
-        const today = new Date().toISOString().split("T")[0];
-        const response = await fetch(`${apiUrl}?date=${today}`, { headers });
+        let allGames = [];
 
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar jogos: ${response.status}`);
+        for (const date of dates) {
+          const response = await fetch(`${apiUrl}?date=${date}`, { headers });
+
+          if (!response.ok) {
+            throw new Error(`Erro ao buscar jogos para ${date}: ${response.status}`);
+          }
+
+          const data = await response.json();
+          allGames = allGames.concat(data.response);
         }
 
-        const data = await response.json();
-        const fixtures = data.response;
-
-        if (fixtures.length === 0) {
-          gamesContainer.innerHTML = "<p>Não há jogos programados para hoje.</p>";
+        if (allGames.length === 0) {
+          gamesContainer.innerHTML = "<p>Não há jogos programados para as datas selecionadas.</p>";
           return;
         }
 
         gamesContainer.innerHTML = "";
 
-        for (const fixture of fixtures) {
+        for (const fixture of allGames) {
           const homeTeamId = fixture.teams.home.id;
           const awayTeamId = fixture.teams.away.id;
 
